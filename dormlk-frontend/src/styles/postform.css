@@ -1,0 +1,11 @@
+.custom-select__control {
+    max-width: 350px; /* Set your desired max width */
+    overflow: hidden; /* Hide overflow */
+    white-space: nowrap; /* Prevent text from wrapping */
+    text-overflow: ellipsis; /* Show ellipsis (...) for overflowing text */
+}
+
+.custom-select__control--is-focused {
+    border-color: black !important;
+    box-shadow: 0 0 0 0px black !important;
+}

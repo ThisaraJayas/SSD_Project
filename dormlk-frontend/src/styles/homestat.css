@@ -1,0 +1,6 @@
+.custom-icon {
+    /* Adjust these values to achieve the desired stroke appearance */
+    width: 25px; /* Change as needed */
+    height: 25px; /* Change as needed */
+    stroke-width: 0.5; /* Adjust for thinner stroke */
+  }

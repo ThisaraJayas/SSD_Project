@@ -1,0 +1,31 @@
+.homeContainer {
+    width: 100%;
+    height: 50vh;
+    background-image: url(home6.png);
+    background-position: center;
+    background-size: cover;
+}
+
+@media (max-width: 768px) {
+    .homeContainer {
+        height: 80vh; /* Increase height for smaller screens */
+    }
+}
+.bannerSection {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px; 
+    height: 100%; 
+}
+
+.bannerText {
+    margin-top: 10%;
+}
+
+.bannerText .title {
+    font-size: 48px;
+    font-family: "Lexend Deca", sans-serif;
+    font-weight: 600;
+    color: rgb(1, 0, 61);
+}

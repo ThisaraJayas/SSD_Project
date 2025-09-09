@@ -1,0 +1,12 @@
+.fixed-image {
+    position: fixed; /* Keep the map fixed in the viewport */
+    top: 0;
+    right: 0;
+    width: 50%; /* Adjust as needed */
+    height: 100%; /* Full height */
+    z-index: 0; /* Adjust to ensure it is interactive */
+}
+.form-container {
+    position: relative; /* Default */
+    z-index: 1; /* Higher than the map */
+}

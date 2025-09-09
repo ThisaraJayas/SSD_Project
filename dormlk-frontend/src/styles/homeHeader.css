@@ -1,0 +1,4 @@
+.headerOne {
+    background-color: transparent !important;
+    border-color: transparent; /* Ensure border is also transparent */
+  }
