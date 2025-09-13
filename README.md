@@ -12,6 +12,6 @@ Our goal was to identify, analyze, and fix security vulnerabilities in an existi
 | Member 1 | IT22573896   | OAuth Implementation |
 | Member 2 | ITxxxxxxx    |  |
 | Member 3 | ITxxxxxxx    |  |
-| Member 4 | ITxxxxxxx    |  |
+| Member 4 | IT22028464    | CSP Header Not Set, Missing Anti-Clickjaking Header |
 
 ---
