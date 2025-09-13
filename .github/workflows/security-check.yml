@@ -13,7 +13,7 @@ jobs:
 
     strategy:
       matrix:
-        project-dir: [ 'backend' ]
+        project-dir: [ 'dormlk-backend' ]
 
     steps:
       - name: ⬇️ Checkout code
