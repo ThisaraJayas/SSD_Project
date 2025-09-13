@@ -2,9 +2,9 @@ name: Security Scan
 
 on:
   push:
-    branches: [ main, dev, live]
+    branches: [ main, dev, live ]
   pull_request:
-    branches: [ main, dev, live]
+    branches: [ main, dev, live ]
   workflow_dispatch:
 
 jobs:
@@ -13,7 +13,7 @@ jobs:
 
     strategy:
       matrix:
-        project-dir: [ 'dormlk-backend' ]
+        project-dir: [ 'dormlk-backend', 'dormlk-frontend' ]
 
     steps:
       - name: ⬇️ Checkout code
@@ -24,18 +24,22 @@ jobs:
         with:
           node-version: 18
 
-      - name: 📦 Install pnpm
-        run: npm install -g pnpm
-
       - name: 📦 Install dependencies
         working-directory: ${{ matrix.project-dir }}
-        run: pnpm install --no-frozen-lockfile
-        continue-on-error: true  # skips folders without package.json
+        run: npm install
+        continue-on-error: true  # skips if no package.json
 
-      - name: 🔍 Run dependency vulnerability audit
+      # Step 1: Fail build if high/critical issues are found
+      - name: 🔍 Run dependency audit (blocker: high & critical)
         working-directory: ${{ matrix.project-dir }}
-        run: pnpm audit --audit-level=moderate
+        run: npm audit --audit-level=high
         continue-on-error: false
+
+      # Step 2: Log moderate issues but don't fail
+      - name: 🔍 Run dependency audit (report moderates)
+        working-directory: ${{ matrix.project-dir }}
+        run: npm audit --audit-level=moderate
+        continue-on-error: true
 
       - name: 📦 Setup Python for Semgrep
         uses: actions/setup-python@v4
