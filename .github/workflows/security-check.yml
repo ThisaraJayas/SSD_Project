@@ -29,10 +29,17 @@ jobs:
         run: npm install
         continue-on-error: true  # skips if no package.json
 
-      - name: 🔍 Run dependency vulnerability audit
+      # Step 1: Fail build if high/critical issues are found
+      - name: 🔍 Run dependency audit (blocker: high & critical)
+        working-directory: ${{ matrix.project-dir }}
+        run: npm audit --audit-level=high
+        continue-on-error: false
+
+      # Step 2: Log moderate issues but don't fail
+      - name: 🔍 Run dependency audit (report moderates)
         working-directory: ${{ matrix.project-dir }}
         run: npm audit --audit-level=moderate
-        continue-on-error: false
+        continue-on-error: true
 
       - name: 📦 Setup Python for Semgrep
         uses: actions/setup-python@v4
