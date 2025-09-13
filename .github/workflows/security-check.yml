@@ -2,9 +2,9 @@ name: Security Scan
 
 on:
   push:
-    branches: [ main, development, live ]
+    branches: [ main, dev, live]
   pull_request:
-    branches: [ main, development, live ]
+    branches: [ main, dev, live]
   workflow_dispatch:
 
 jobs:
