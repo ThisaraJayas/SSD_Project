@@ -56,7 +56,11 @@ app.use(
   })
 );
 
+// Remove X-Powered-By header to avoid info leak
+app.disable('x-powered-by');
+
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 //test route
 app.get('/', (req, res) => {

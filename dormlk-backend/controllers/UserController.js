@@ -6,9 +6,12 @@ const bcrypt = require('bcryptjs');
 exports.registerUser = async (req, res) => {
     try {
         const { firstName, lastName, email, password } = req.body;
-        const hashedPassword = await bcrypt.hash(password, 10);
+        const hashedPassword = await bcrypt.hash(password, 12); // increased salt rounds
         const user = await User.create({ firstName, lastName, email, password: hashedPassword });
         const token = jwt.sign({ userId: user._id, email: user.email }, process.env.JWT_SECRET, { expiresIn: '1d' });
+        
+        // Send token with httpOnly cookie
+        res.cookie('token', token, { httpOnly: true, secure: true, sameSite: 'Strict' });
         res.status(201).json({ token });
         console.log("Success Regis",token);
         
@@ -26,6 +29,9 @@ exports.loginUser = async (req, res) => {
           throw new Error('Invalid credentials');
         }
         const token = jwt.sign({ userId: user._id, email: user.email}, process.env.JWT_SECRET, { expiresIn: '1d' });
+        
+        // Send token with httpOnly cookie
+        res.cookie('token', token, { httpOnly: true, secure: true, sameSite: 'Strict' });
         res.status(201).json({ token });
       } catch (err) {
         res.status(400).json({ error: err.message });
