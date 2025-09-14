@@ -47,6 +47,11 @@ app.use(
         "data:",
         "https://dormlk-frontend-1anh.vercel.app"
       ],
+      "connect-src": [   //Added (fixes CSP fallback issue)
+        "'self'",
+        "https://dormlk-frontend-1anh.vercel.app",
+        "https://dorm.lk"
+      ],
       "object-src": ["'none'"],
       "frame-ancestors": ["'self'"],
       "form-action": ["'self'"],
@@ -62,6 +67,18 @@ app.use(express.json());
 app.get('/', (req, res) => {
   res.send('CSP Header Enabled');
 });
+// Robots.txt and Sitemap.xml routes
+app.get('/robots.txt', (req, res) => {
+  res.type('text/plain');
+  res.send("User-agent: *\nDisallow:");
+});
+
+app.get('/sitemap.xml', (req, res) => {
+  res.type('application/xml');
+  res.send(`<?xml version="1.0" encoding="UTF-8"?>
+    <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"></urlset>`);
+});
+
 
 // Connect to MongoDB
 mongoose.connect(process.env.NONGO_URL).then(()=>{
