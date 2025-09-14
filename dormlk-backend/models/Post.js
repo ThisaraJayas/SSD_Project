@@ -1,10 +1,10 @@
 // models/Post.js
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 const PostSchema = new mongoose.Schema({
   title: String,
   location: String,
-  description: { type: String, length: 10000 },
+  description: { type: String, maxlength: 10000 },
   price: String,
   mobileContact: String,
   emailContact: String,
@@ -24,4 +24,4 @@ const PostSchema = new mongoose.Schema({
   reviews: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Comment' }]
 });
 
-module.exports = mongoose.model('Post', PostSchema);
+export default mongoose.model('Post', PostSchema);

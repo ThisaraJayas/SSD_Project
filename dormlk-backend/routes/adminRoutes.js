@@ -1,9 +1,10 @@
-const express = require('express');
-const { authenticate } = require('../middleware/authMiddleware');
-const { updatePostStatus, getAllPosts } = require('../controllers/PostController');
+import express from "express";
+import { authenticate } from "../middleware/authMiddleware.js";
+import { updatePostStatus, getAllPosts } from "../controllers/PostController.js";
+
 const router = express.Router();
 
-router.put('/:postId/status/:status', authenticate, updatePostStatus);
-router.get('/allPosts', getAllPosts);
+router.put("/:postId/status/:status", authenticate, updatePostStatus);
+router.get("/allPosts", getAllPosts);
 
-module.exports = router;
+export default router;
