@@ -16,38 +16,38 @@ jobs:
         project-dir: [ 'dormlk-backend', 'dormlk-frontend' ]
 
     steps:
-      - name: ⬇️ Checkout code
+      - name: "⬇️ Checkout code"
         uses: actions/checkout@v3
 
-      - name: 🟢 Setup Node.js
+      - name: "🟢 Setup Node.js"
         uses: actions/setup-node@v3
         with:
           node-version: 18
 
-      - name: 📦 Install dependencies
+      - name: "📦 Install dependencies"
         working-directory: ${{ matrix.project-dir }}
         run: npm install
-        continue-on-error: true  # skips if no package.json
+        continue-on-error: true # skips if no package.json
 
       # Step 1: Fail build if high/critical issues are found
-      - name: 🔍 Run dependency audit (blocker: high & critical)
+      - name: "🔍 Run dependency audit (blocker: high & critical)"
         working-directory: ${{ matrix.project-dir }}
         run: npm audit --audit-level=high
         continue-on-error: false
 
       # Step 2: Log moderate issues but don't fail
-      - name: 🔍 Run dependency audit (report moderates)
+      - name: "🔍 Run dependency audit (report moderates)"
         working-directory: ${{ matrix.project-dir }}
         run: npm audit --audit-level=moderate
         continue-on-error: true
 
-      - name: 📦 Setup Python for Semgrep
+      - name: "📦 Setup Python for Semgrep"
         uses: actions/setup-python@v4
         with:
           python-version: '3.x'
 
-      - name: 🛡 Install Semgrep
+      - name: "🛡 Install Semgrep"
         run: pip install semgrep
 
-      - name: 🔎 Run Semgrep Security Scan
+      - name: "🔎 Run Semgrep Security Scan"
         run: semgrep --config=p/ci --error --exclude=**/node_modules/** --exclude=**/.next/**
