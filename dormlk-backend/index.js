@@ -85,3 +85,4 @@ app.use('/api/admin',adminRoutes );
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);
 });
+
