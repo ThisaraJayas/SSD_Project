@@ -1,6 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
+const helmet = require('helmet');
 require('dotenv').config();
 
 const userRoutes = require('./routes/userRoutes');
@@ -9,18 +10,57 @@ const messageRoutes = require('./routes/messageRoutes');
 const messageReplyRoutes = require('./routes/messageReplyRoutes');
 const commentRoutes = require('./routes/commentRoutes');
 const adminRoutes = require('./routes/adminRoutes')
-
 const app = express();
-app.use(cors());
-app.use(express.json());
 const port = 3000;
-app.use(cors( {
-    origin: ["https://dormlk-frontend-1anh.vercel.app", "https://dorm.lk"],
-    methods: ["POST", "GET", "PUT", "DELETE", "PATCH", "OPTIONS"],
-    credentials: true
-}))
+
+app.use(cors({
+  origin: ["https://dormlk-frontend-1anh.vercel.app", "https://dorm.lk"],
+  methods: ["POST", "GET", "PUT", "DELETE", "PATCH", "OPTIONS"],
+  credentials: true
+}));
+
+// helmet security headers
+app.use(helmet());
+
+// strict content security Policy
+app.use(
+  helmet.contentSecurityPolicy({
+    useDefaults: true,
+    directives: {
+      "default-src": ["'self'"],
+      "script-src": [
+        "'self'",
+        "https://dormlk-frontend-1anh.vercel.app"
+      ],
+      "style-src": [
+        "'self'",
+        "https://fonts.googleapis.com" 
+        
+      ],
+      "font-src": [
+        "'self'",
+        "https://fonts.gstatic.com",
+        "data:"
+      ],
+      "img-src": [
+        "'self'",
+        "data:",
+        "https://dormlk-frontend-1anh.vercel.app"
+      ],
+      "object-src": ["'none'"],
+      "frame-ancestors": ["'self'"],
+      "form-action": ["'self'"],
+      "base-uri": ["'self'"],
+      "upgrade-insecure-requests": []
+    }
+  })
+);
+
+app.use(express.json());
+
+//test route
 app.get('/', (req, res) => {
-    res.send('Hello, World!');
+  res.send('CSP Header Enabled');
 });
 
 // Connect to MongoDB
