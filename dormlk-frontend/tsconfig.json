@@ -3,7 +3,7 @@
     "module": "Node16",
     "moduleResolution": "node16",
     "target": "es2020", 
-    "jsx": "react",
+    "jsx": "react-jsx",
     // ...
     "baseUrl": ".",
     "esModuleInterop": true,
