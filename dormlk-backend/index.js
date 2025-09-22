@@ -19,47 +19,26 @@ app.use(cors({
   credentials: true
 }));
 
-// helmet security headers
-app.use(helmet());
-
-// strict content security Policy
-app.use(
-  helmet.contentSecurityPolicy({
-    useDefaults: true,
-    directives: {
-      "default-src": ["'self'"],
-      "script-src": [
-        "'self'",
-        "https://dormlk-frontend-1anh.vercel.app"
-      ],
-      "style-src": [
-        "'self'",
-        "https://fonts.googleapis.com" 
-        
-      ],
-      "font-src": [
-        "'self'",
-        "https://fonts.gstatic.com",
-        "data:"
-      ],
-      "img-src": [
-        "'self'",
-        "data:",
-        "https://dormlk-frontend-1anh.vercel.app"
-      ],
-      "connect-src": [   //Added (fixes CSP fallback issue)
-        "'self'",
-        "https://dormlk-frontend-1anh.vercel.app",
-        "https://dorm.lk"
-      ],
-      "object-src": ["'none'"],
-      "frame-ancestors": ["'self'"],
-      "form-action": ["'self'"],
-      "base-uri": ["'self'"],
-      "upgrade-insecure-requests": []
-    }
-  })
+// Custom Security Headers Middleware
+app.use((req, res, next) => {
+  // Content Security Policy Header not set
+  res.setHeader(
+    "Content-Security-Policy", `
+    default-src 'self';
+    script-src 'self' https://dormlk-frontend-1anh.vercel.app;
+    style-src 'self' https://fonts.googleapis.com;
+    font-src 'self' https://fonts.gstatic.com data:;
+    img-src 'self' data: https://dormlk-frontend-1anh.vercel.app;
+    connect-src 'self' https://dormlk-frontend-1anh.vercel.app https://dorm.lk;
+    object-src 'none';
+    frame-ancestors 'self';
+    form-action 'self';
+    base-uri 'self';
+    upgrade-insecure-requests;
+  `.replace(/\s{2,}/g, ' ').trim()
 );
+  next();
+});
 
 app.use(express.json());
 
@@ -67,17 +46,7 @@ app.use(express.json());
 app.get('/', (req, res) => {
   res.send('CSP Header Enabled');
 });
-// Robots.txt and Sitemap.xml routes
-app.get('/robots.txt', (req, res) => {
-  res.type('text/plain');
-  res.send("User-agent: *\nDisallow:");
-});
 
-app.get('/sitemap.xml', (req, res) => {
-  res.type('application/xml');
-  res.send(`<?xml version="1.0" encoding="UTF-8"?>
-    <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"></urlset>`);
-});
 
 
 // Connect to MongoDB
