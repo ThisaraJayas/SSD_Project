@@ -13,6 +13,18 @@ const adminRoutes = require('./routes/adminRoutes')
 const app = express();
 const port = 3000;
 
+// Custom middleware to set X-Frame-Options
+app.use((req, res, next) => {
+  res.setHeader('X-Frame-Options', 'SAMEORIGIN');
+  next();
+});
+
+// Custom middleware to set the X-Content-Type-Options header
+app.use((req, res, next) => {
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  next(); 
+});
+
 app.use(cors({
   origin: ["https://dormlk-frontend-1anh.vercel.app", "https://dorm.lk"],
   methods: ["POST", "GET", "PUT", "DELETE", "PATCH", "OPTIONS"],
