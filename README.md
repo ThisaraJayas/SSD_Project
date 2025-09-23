@@ -38,8 +38,18 @@ Our goal was to identify, analyze, and fix security vulnerabilities in an existi
       ```bash
       npm install
       ```
+      
+2. **Run the Application:**
+    - For the frontend, navigate to the `frontend` directory and run:
+      ```bash
+      npm run dev
+      ```
+    - For the backend, navigate to the `backend` directory and run:
+      ```bash
+      npm start
+      ```
 
-2. **Environment Variables:**
+3. **Environment Variables:**
     - Create a `.env` file in the `backend` directory with the following variables:
       ```plaintext
       PORT=3000
