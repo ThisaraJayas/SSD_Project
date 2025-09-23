@@ -108,9 +108,7 @@ app.use("/api", csrfProtection, (req, res, next) => {
       httpOnly: false, // readable by JS/axios
       path: "/", // send to all API routes
     });
-  } catch (_) {
-    // ignore; token will be generated on next request
-  }
+  } catch (_) {}
   next();
 });
 
