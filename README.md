@@ -11,7 +11,7 @@ Our goal was to identify, analyze, and fix security vulnerabilities in an existi
 |------|--------------|-------------|
 | Member 1 | IT22573896   | OAuth Implementation |
 | Member 2 | IT22574572    | Cross domain misconfiguration, Hidden file found |
-| Member 3 | IT22603654    |  |
+| Member 3 | IT22603654    | Cross domain javaScript source file inclusion, Missing Anti-Clickjaking Header, X-content-type-options header missing  |
 | Member 4 | IT22028464    | CSP Header Not Set, Missing Anti-Clickjaking Header |
 
 ---
