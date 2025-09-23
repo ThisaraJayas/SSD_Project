@@ -24,9 +24,9 @@ const port = process.env.PORT || 3000;
 const isProd = process.env.NODE_ENV === "production";
 
 // Security headers
-app.use(helmet());
+// app.use(helmet());
 
-// Block access to hidden/sensitive files, prevent path traversal, and ensure nosniff header
+// Block access to hidden/sensitive files, prevent path traversal, and ensure nosniff header -- sachintha
 app.use((req, res, next) => {
   // Normalize path
   let p = "";
@@ -55,9 +55,6 @@ app.use((req, res, next) => {
 
   next();
 });
-
-// Security headers
-app.use(helmet());
 
 // CORS whitelist and safe dynamic origin handling
 const CORS_WHITELIST = [
@@ -93,29 +90,6 @@ app.use(
   })
 );
 
-// // Block access to dotfiles / sensitive filenames and path traversal, ensure nosniff header
-// app.use((req, res, next) => {
-//   let p = "";
-//   try {
-//     p = decodeURIComponent(req.path || "").replace(/\\/g, "/");
-//   } catch (e) {
-//     return res.status(400).end();
-//   }
-
-// +  // Deny path traversal attempts
-// +  if (p.includes("..")) return res.status(400).end();
-// +
-// +  // Deny access to hidden files (any segment starting with '.') or common sensitive names
-// +  const segments = p.split("/").filter(Boolean);
-// +  if (segments.some(s => s.startsWith(".")) || /(^|\/)(\.env|\.git|\.vercel)(\/|$)/i.test(p)) {
-// +    return res.status(404).end();
-// +  }
-// +
-// +  // Fallback: ensure header present
-// +  res.setHeader("X-Content-Type-Options", "nosniff");
-// +  next();
-// +});
-// +
 // Middlewares
 app.use(
   cors({
@@ -211,16 +185,6 @@ app.use(
 app.get("/", (req, res) => {
   res.send("Hello, World!");
 });
-
-// Connect to MongoDB
-// mongoose
-//   .connect(process.env.MNONGO_URL)
-//   .then(() => {
-//     console.log("Database Connected Successfully..");
-//   })
-//   .catch((err) => {
-//     console.log("MongoDB Connection Error:", err);
-//   });
 
 // --- Health check (public, no CSRF needed) ---
 app.get("/", (_req, res) => res.send("OK"));
