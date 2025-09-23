@@ -10,7 +10,7 @@ export const createComment = createAsyncThunk("createComment",async(content : Co
     const jwt = localStorage.getItem("jwt");
     if (!jwt) throw new Error("JWT not found");
     try{
-        const {data} = await axios.post(`https://dormlkbackendmain.vercel.app/api/comments`, content,{
+        const {data} = await axios.post(`http://localhost:3000/api/comments`, content,{
             headers: {
                 "Authorization": `Bearer ${jwt}`
             }
@@ -27,7 +27,7 @@ export const fetchCommentsByPostId = createAsyncThunk("fetchCommentsByPostId",as
     console.log("PPP ",postId);
     
     try{
-        const {data}=await axios.get(`https://dormlkbackendmain.vercel.app/api/comments/${postId}`)
+        const {data}=await axios.get(`http://localhost:3000/api/comments/${postId}`)
         return data
     }catch(error){
         console.log("Fetch Comments by PostId Error : ",error);

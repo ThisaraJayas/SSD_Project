@@ -22,7 +22,7 @@ export const createPost = createAsyncThunk("createPost",async(postData :Post)=>{
     const jwt = localStorage.getItem("jwt");
     if (!jwt) throw new Error("JWT not found");
     try{
-        const {data} = await axios.post(`https://dormlkbackendmain.vercel.app/api/posts`,postData,{
+        const {data} = await axios.post(`http://localhost:3000/api/posts`,postData,{
             headers: {
                 "Authorization": `Bearer ${jwt}`
             }
@@ -37,7 +37,7 @@ export const createPost = createAsyncThunk("createPost",async(postData :Post)=>{
 
 export const fetchPostByDistrict = createAsyncThunk("fetchPostByDistrict", async(district : string)=>{
     try{
-        const {data} = await axios.get(`https://dormlkbackendmain.vercel.app/api/posts/district/${district}`)
+        const {data} = await axios.get(`http://localhost:3000/api/posts/district/${district}`)
         return data
     }catch(error){
         console.log("Fetch Post by district Error : ",error); 
@@ -53,7 +53,7 @@ interface FilterPostBySearchParams {
 export const filterPostBySearchFilter = createAsyncThunk("filterPostBySearchFilter", async(params: FilterPostBySearchParams)=>{
     const { district, accommodationType } = params;
     try{
-        const {data} = await axios.get(`https://dormlkbackendmain.vercel.app/api/posts/search`, 
+        const {data} = await axios.get(`http://localhost:3000/api/posts/search`, 
             {
                 params: {district, accommodationType},
             }
@@ -67,7 +67,7 @@ export const filterPostBySearchFilter = createAsyncThunk("filterPostBySearchFilt
 
 export const fetchAllPosts = createAsyncThunk("fetchAllPosts", async()=>{
     try{
-        const {data} = await axios.get(`https://dormlkbackendmain.vercel.app/api/posts`)
+        const {data} = await axios.get(`http://localhost:3000/api/posts`)
         return data
     }catch(error){
         console.log("Fetch Post Error : ",error); 
@@ -77,7 +77,7 @@ export const fetchAllPosts = createAsyncThunk("fetchAllPosts", async()=>{
 
 export const fetchPostByHouseType = createAsyncThunk("fetchPostByHouseType", async(accommodationType : string)=>{
     try{
-        const {data} = await axios.get(`https://dormlkbackendmain.vercel.app/api/posts/accommodationType/${accommodationType}`)
+        const {data} = await axios.get(`http://localhost:3000/api/posts/accommodationType/${accommodationType}`)
         return data
     }catch(error){
         console.log("Fetch Post by Houe Type Error : ",error); 
@@ -86,7 +86,7 @@ export const fetchPostByHouseType = createAsyncThunk("fetchPostByHouseType", asy
 
 export const fetchPostsByUserId = createAsyncThunk("fetchPostsByUserId",async(userId : string)=>{
     try{
-        const {data}=await axios.get(`https://dormlkbackendmain.vercel.app/api/posts/posts/${userId}`)
+        const {data}=await axios.get(`http://localhost:3000/api/posts/posts/${userId}`)
         return data
     }catch(error){
         console.log("Fetch Post by UserId Error : ",error);
@@ -95,7 +95,7 @@ export const fetchPostsByUserId = createAsyncThunk("fetchPostsByUserId",async(us
 
 export const fetchPostsByPostId = createAsyncThunk("fetchPostsByPostId",async(postId :string)=>{
     try{
-        const {data}=await axios.get(`https://dormlkbackendmain.vercel.app/api/posts/${postId}`)
+        const {data}=await axios.get(`http://localhost:3000/api/posts/${postId}`)
         console.log(data);
         
         return data
@@ -108,7 +108,7 @@ export const DeleteByPostId = createAsyncThunk("post/DeleteByPostId",async(postI
     try{
         const jwt = localStorage.getItem("jwt");
         if (!jwt) throw new Error("JWT not found");
-        const {data}=await axios.delete(`https://dormlkbackendmain.vercel.app/api/posts/${postId}`,{
+        const {data}=await axios.delete(`http://localhost:3000/api/posts/${postId}`,{
             headers: {
                 "Authorization": `Bearer ${jwt}`
             }

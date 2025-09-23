@@ -9,12 +9,13 @@ const postRoutes = require('./routes/postRoutes');
 const messageRoutes = require('./routes/messageRoutes');
 const messageReplyRoutes = require('./routes/messageReplyRoutes');
 const commentRoutes = require('./routes/commentRoutes');
-const adminRoutes = require('./routes/adminRoutes')
+const adminRoutes = require('./routes/adminRoutes');
+const { sanitizeInput } = require('./middleware/validation');
 const app = express();
 const port = 3000;
 
 app.use(cors({
-  origin: ["https://dormlk-frontend-1anh.vercel.app", "https://dorm.lk"],
+  origin: ["https://dormlk-frontend-1anh.vercel.app","http://localhost:5173", "https://dorm.lk"],
   methods: ["POST", "GET", "PUT", "DELETE", "PATCH", "OPTIONS"],
   credentials: true
 }));
@@ -29,7 +30,7 @@ app.use((req, res, next) => {
     style-src 'self' https://fonts.googleapis.com;
     font-src 'self' https://fonts.gstatic.com data:;
     img-src 'self' data: https://dormlk-frontend-1anh.vercel.app;
-    connect-src 'self' https://dormlk-frontend-1anh.vercel.app https://dorm.lk;
+    connect-src 'self' https://dormlk-frontend-1anh.vercel.app https://dorm.lk http://localhost:5173;
     object-src 'none';
     frame-ancestors 'self';
     form-action 'self';
@@ -39,6 +40,8 @@ app.use((req, res, next) => {
 );
   next();
 });
+
+app.use(sanitizeInput);
 
 app.use(express.json());
 

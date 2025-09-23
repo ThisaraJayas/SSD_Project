@@ -46,9 +46,24 @@ exports.getUserProfile = async (req, res) => {
 // Change Password
 exports.changePassword = async (req, res) => {
     try {
-        const { newPassword } = req.body;
-        const user = await User.findById(req.userId);
-        user.password = newPassword;
+         const { newPassword } = req.body;
+        // const user = await User.findById(req.userId);
+        // user.password = newPassword;
+        // Validate input
+         if (!newPassword || typeof newPassword !== 'string' || newPassword.length < 8) {
+            return res.status(400).json({ message: 'Password must be at least 8 characters long' });
+        }
+
+        // Get user using the userId from the token
+        const user = await User.findById(req.userId).select('+password');
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        // Hash new password
+        const hashedPassword = await bcrypt.hash(newPassword, 10);
+        user.password = hashedPassword;
+        
         await user.save();
         res.status(200).json({ message: 'Password changed successfully' });
     } catch (error) {

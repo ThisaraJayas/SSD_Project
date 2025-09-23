@@ -15,7 +15,7 @@ export const register = createAsyncThunk("register", async (userData: Register) 
     console.log(userData);
     
     try {
-        const { data } = await axios.post(`https://dormlkbackendmain.vercel.app/api/users/register`, userData);
+        const { data } = await axios.post(`http://localhost:3000/api/users/register`, userData);
         console.log(data);
 
         if (data.token) {
@@ -32,7 +32,7 @@ export const login = createAsyncThunk("login", async(userData : Login)=>{
     console.log(userData);
     
     try{
-        const {data} = await axios.post(`https://dormlkbackendmain.vercel.app/api/users/login`,userData)
+        const {data} = await axios.post(`http://localhost:3000/api/users/login`,userData)
         console.log(data.token);
         
         if(data.token){
@@ -51,7 +51,7 @@ export const getUser = createAsyncThunk("getUser", async()=>{
         const jwt = localStorage.getItem("jwt");
         if (!jwt) throw new Error("JWT not found");
 
-        const { data } = await axios.get(`https://dormlkbackendmain.vercel.app/api/users/profile`, {
+        const { data } = await axios.get(`http://localhost:3000/api/users/profile`, {
             headers: {
                 "Authorization": `Bearer ${jwt}`
             }
@@ -71,8 +71,8 @@ export const passwordChange = createAsyncThunk("passwordChange", async(newPasswo
         const jwt = localStorage.getItem("jwt");
         if (!jwt) throw new Error("JWT not found");
         // https://dormlkbackendmain.vercel.app/api/user/change-password/${newPassword}
-        const {data} = await axios.put(``,
-            { }, 
+        const {data} = await axios.put(`http://localhost:3000/api/users/change-password`,
+            { newPassword }, 
             {
               headers: {
                 'Authorization': `Bearer ${jwt}`,
