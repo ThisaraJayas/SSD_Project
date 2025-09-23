@@ -56,6 +56,66 @@ app.use((req, res, next) => {
   next();
 });
 
+// Security headers
+app.use(helmet());
+
+// CORS whitelist and safe dynamic origin handling
+const CORS_WHITELIST = [
+  "http://localhost:5173",
+  "https://dormlk-frontend-1anh.vercel.app",
+  "https://dorm.lk",
+];
+
+// Ensure caches/proxies vary responses by origin
+app.use((req, res, next) => {
+  res.setHeader("Vary", "Origin");
+  next();
+});
+
+// Dynamic, restrictive CORS
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      // allow requests without an Origin header (curl, mobile apps, same-origin)
+      if (!origin) return callback(null, true);
+      if (CORS_WHITELIST.includes(origin)) return callback(null, true);
+      return callback(new Error("CORS policy: origin not allowed"), false);
+    },
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allowedHeaders: [
+      "Content-Type",
+      "Authorization",
+      "X-Requested-With",
+      "Accept",
+    ],
+    credentials: true,
+    optionsSuccessStatus: 204,
+  })
+);
+
+// // Block access to dotfiles / sensitive filenames and path traversal, ensure nosniff header
+// app.use((req, res, next) => {
+//   let p = "";
+//   try {
+//     p = decodeURIComponent(req.path || "").replace(/\\/g, "/");
+//   } catch (e) {
+//     return res.status(400).end();
+//   }
+
+// +  // Deny path traversal attempts
+// +  if (p.includes("..")) return res.status(400).end();
+// +
+// +  // Deny access to hidden files (any segment starting with '.') or common sensitive names
+// +  const segments = p.split("/").filter(Boolean);
+// +  if (segments.some(s => s.startsWith(".")) || /(^|\/)(\.env|\.git|\.vercel)(\/|$)/i.test(p)) {
+// +    return res.status(404).end();
+// +  }
+// +
+// +  // Fallback: ensure header present
+// +  res.setHeader("X-Content-Type-Options", "nosniff");
+// +  next();
+// +});
+// +
 // Middlewares
 app.use(
   cors({
@@ -74,6 +134,7 @@ app.use(
 
 // Core middleware
 app.set("trust proxy", 1);
+
 app.use(express.json());
 app.use(cookieParser());
 
@@ -127,6 +188,39 @@ app.use((req, res, next) => {
   // so we set this cookie in a tiny per-request hook we'll place AFTER csurf (see below).
   next();
 });
+// app.use(
+//   cookieSession({
+//     name: "session",
+//     keys: [process.env.SESSION_SECRET || "dev-secret"],
+//     maxAge: 24 * 60 * 60 * 1000,
+//   })
+// );
+// const isProd = process.env.NODE_ENV === "production";
+app.use(
+  cookieSession({
+    name: "session",
+    keys: [process.env.SESSION_SECRET || "dev-secret"],
+    maxAge: 24 * 60 * 60 * 1000,
+    httpOnly: true,
+    secure: isProd, // require HTTPS in production
+    sameSite: "none", // required for cross-site requests with credentials
+  })
+);
+
+// Test route
+app.get("/", (req, res) => {
+  res.send("Hello, World!");
+});
+
+// Connect to MongoDB
+// mongoose
+//   .connect(process.env.MNONGO_URL)
+//   .then(() => {
+//     console.log("Database Connected Successfully..");
+//   })
+//   .catch((err) => {
+//     console.log("MongoDB Connection Error:", err);
+//   });
 
 // --- Health check (public, no CSRF needed) ---
 app.get("/", (_req, res) => res.send("OK"));
