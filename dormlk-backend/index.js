@@ -99,6 +99,19 @@ app.use(
   })
 );
 // --- Core middleware ---
+// Custom middleware to set X-Frame-Options
+app.use((req, res, next) => {
+  res.setHeader('X-Frame-Options', 'SAMEORIGIN');
+  next();
+});
+
+// Custom middleware to set the X-Content-Type-Options header
+app.use((req, res, next) => {
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  next(); 
+});
+
+
 // --- Security headers ---
 app.use(
   helmet({
