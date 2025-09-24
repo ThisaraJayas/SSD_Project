@@ -18,6 +18,7 @@ import messageReplyRoutes from "./routes/messageReplyRoutes.js";
 import commentRoutes from "./routes/commentRoutes.js";
 import adminRoutes from "./routes/adminRoutes.js";
 import googleAuthRoutes from "./routes/googleAuthRoutes.js";
+import sanitizeInput from "./middleware/validation.js";
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -106,11 +107,35 @@ app.use(
   })
 );
 
+// Custom Security Headers Middleware
+
+
+app.use((req, res, next) => {
+  // Content Security Policy Header not set
+  res.setHeader(
+    "Content-Security-Policy", `
+    default-src 'self';
+    script-src 'self' https://dormlk-frontend-1anh.vercel.app;
+    style-src 'self' https://fonts.googleapis.com;
+    font-src 'self' https://fonts.gstatic.com data:;
+    img-src 'self' data: https://dormlk-frontend-1anh.vercel.app;
+    connect-src 'self' https://dormlk-frontend-1anh.vercel.app https://dorm.lk;
+    object-src 'none';
+    frame-ancestors 'self';
+    form-action 'self';
+    base-uri 'self';
+    upgrade-insecure-requests;
+  `.replace(/\s{2,}/g, ' ').trim()
+);
+  next();
+});
+
 // Core middleware
 app.set("trust proxy", 1);
 
 app.use(express.json());
 app.use(cookieParser());
+app.use(sanitizeInput);
 
 // CORS (allow credentials)
 const allowed = new Set([

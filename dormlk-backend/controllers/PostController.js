@@ -74,14 +74,35 @@ export const getPostBySearchHome = async (req, res) => {
     try {
         const { cityDistrict, accommodationType } = req.query;
         const query = {};
-        if (cityDistrict) query.cityDistrict = cityDistrict;
-        if (accommodationType) query.accommodationType = accommodationType;
-
+        // if (cityDistrict) query.cityDistrict = cityDistrict;
+        // if (accommodationType) query.accommodationType = accommodationType;
+        // Sanitize and validate inputs
+        if (cityDistrict) {
+            const sanitizedDistrict = sanitizeString(cityDistrict);
+            if (sanitizedDistrict) {
+                query.cityDistrict = { $eq: sanitizedDistrict }; 
+            }
+        }
+        if (accommodationType) {
+            const sanitizedType = sanitizeString(accommodationType);
+            if (sanitizedType) {
+                query.accommodationType = { $eq: sanitizedType }; 
+            }
+        }
         const posts = await Post.find(query).populate('user');
         res.status(200).json(posts);
+
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
+};
+// Validation helper function
+
+
+const sanitizeString = (input) => {
+    if (typeof input !== 'string') return null;
+    // Remove any MongoDB operators and sanitize
+    return input.replace(/[\$\\'"\;\{\}]/g, '');
 };
 
 // Get Posts by User ID
