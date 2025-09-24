@@ -23,7 +23,7 @@ Our goal was to identify, analyze, and fix security vulnerabilities in an existi
 
 
 ## Video Presentation
-- [YouTube Link](https://youtube.com/your-video-link)  
+- [YouTube Link](https://youtu.be/rfOOewcOh1s)  
   *(≤10 minutes, explaining vulnerabilities, fixes, and OAuth integration)*
 
 # Installation Instructions
