@@ -1,9 +1,11 @@
-const express = require('express');
-const { createReply, getRepliesByMessageId } = require('../controllers/MessageReplyController');
-const { authenticate } = require('../middleware/authMiddleware');
+// routes/MessageReplyRoutes.js
+import express from 'express';
+import { createReply, getRepliesByMessageId } from '../controllers/MessageReplyController.js';
+import { authenticate } from '../middleware/authMiddleware.js';
+
 const router = express.Router();
 
 router.post('/', authenticate, createReply);
 router.get('/:messageId', authenticate, getRepliesByMessageId);
 
-module.exports = router;
+export default router;

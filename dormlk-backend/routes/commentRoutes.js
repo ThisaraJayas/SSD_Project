@@ -1,9 +1,11 @@
-const express = require('express');
-const { createComment, getCommentsByPostId } = require('../controllers/CommentController');
-const { authenticate } = require('../middleware/authMiddleware');
+// routes/CommentRoutes.js
+import express from 'express';
+import { createComment, getCommentsByPostId } from '../controllers/CommentController.js';
+import { authenticate } from '../middleware/authMiddleware.js';
+
 const router = express.Router();
 
 router.post('/', authenticate, createComment);
 router.get('/:postId', getCommentsByPostId);
 
-module.exports = router;
+export default router;

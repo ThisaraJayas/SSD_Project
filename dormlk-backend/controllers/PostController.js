@@ -1,7 +1,8 @@
-const Post = require('../models/Post');
+// PostController.js
+import Post from '../models/Post.js';
 
 // Create Post
-exports.createPost = async (req, res) => {
+export const createPost = async (req, res) => {
     try {
         const userId = req.userId;
         const postData = req.body;
@@ -14,7 +15,7 @@ exports.createPost = async (req, res) => {
 };
 
 // Get All Posts
-exports.getAllPosts = async (req, res) => {
+export const getAllPosts = async (req, res) => {
     try {
         const posts = await Post.find().populate('user').populate('reviews');
         res.status(200).json(posts);
@@ -23,14 +24,12 @@ exports.getAllPosts = async (req, res) => {
     }
 };
 
-//Update Post Status
-exports.updatePostStatus = async (req, res) => {
+// Update Post Status
+export const updatePostStatus = async (req, res) => {
     try {
         const { postId, status } = req.params;
         const post = await Post.findById(postId);
-        if (!post) {
-            return res.status(404).json({ message: 'Post not found' });
-        }
+        if (!post) return res.status(404).json({ message: 'Post not found' });
         post.postStatus = status;
         await post.save();
         res.status(200).json(post);
@@ -38,8 +37,9 @@ exports.updatePostStatus = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
+
 // Get Post by District
-exports.getPostByDistrict = async (req, res) => {
+export const getPostByDistrict = async (req, res) => {
     try {
         const posts = await Post.find({ cityDistrict: req.params.districts }).populate('user');
         res.status(200).json(posts);
@@ -49,7 +49,7 @@ exports.getPostByDistrict = async (req, res) => {
 };
 
 // Get Post by ID
-exports.getPostById = async (req, res) => {
+export const getPostById = async (req, res) => {
     try {
         const post = await Post.findById(req.params.postId).populate('user');
         if (!post) return res.status(404).json({ message: 'Post not found' });
@@ -60,7 +60,7 @@ exports.getPostById = async (req, res) => {
 };
 
 // Get Post by Accommodation Type
-exports.getPostByAccommodationType = async (req, res) => {
+export const getPostByAccommodationType = async (req, res) => {
     try {
         const posts = await Post.find({ accommodationType: req.params.accommodationType }).populate('user');
         res.status(200).json(posts);
@@ -70,7 +70,7 @@ exports.getPostByAccommodationType = async (req, res) => {
 };
 
 // Search Posts by District and/or Accommodation Type
-exports.getPostBySearchHome = async (req, res) => {
+export const getPostBySearchHome = async (req, res) => {
     try {
         const { cityDistrict, accommodationType } = req.query;
         const query = {};
@@ -85,7 +85,7 @@ exports.getPostBySearchHome = async (req, res) => {
 };
 
 // Get Posts by User ID
-exports.getPostsByUserId = async (req, res) => {
+export const getPostsByUserId = async (req, res) => {
     try {
         const posts = await Post.find({ user: req.params.userId }).populate('user');
         res.status(200).json(posts);
@@ -95,7 +95,7 @@ exports.getPostsByUserId = async (req, res) => {
 };
 
 // Delete Post by ID
-exports.deletePostById = async (req, res) => {
+export const deletePostById = async (req, res) => {
     try {
         const post = await Post.findByIdAndDelete(req.params.postId);
         if (!post) return res.status(404).json({ message: 'Post not found' });

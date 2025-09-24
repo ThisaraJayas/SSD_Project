@@ -1,0 +1,29 @@
+name: Frontend Build Check
+
+on:
+  push:
+    branches: [ main, dev, live ]
+  pull_request:
+    branches: [ main, dev, live ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: ⬇️ Checkout code
+        uses: actions/checkout@v3
+
+      - name: 🟢 Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: 📦 Install dependencies
+        working-directory: dormlk-frontend
+        run: npm install
+
+      - name: 🏗 Build frontend
+        working-directory: dormlk-frontend
+        run: npm run build

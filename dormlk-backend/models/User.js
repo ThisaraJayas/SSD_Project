@@ -1,12 +1,30 @@
 // models/User.js
-const mongoose = require('mongoose');
+import mongoose from "mongoose";
 
-const UserSchema = new mongoose.Schema({
-  firstName: String,
-  lastName: String,
-  email: { type: String, unique: true },
-  userType: { type: String, enum: ['REGULAR', 'ADMIN'], default: 'REGULAR' },
-  password: { type: String, select: false },
-});
+const UserSchema = new mongoose.Schema(
+  {
+    firstName: String,
+    lastName: String,
+    email: { type: String, unique: true, required: true, index: true },
+    userType: { type: String, enum: ["REGULAR", "ADMIN"], default: "REGULAR" },
+    password: {
+      type: String,
+      select: false,
+      required: function () {
+        return this.provider === "LOCAL";
+      },
+    },
+    provider: {
+      type: String,
+      enum: ["LOCAL", "GOOGLE"],
+      default: "LOCAL",
+    },
+    google: {
+      id: { type: String, index: true },
+    },
+    avatar: String,
+  },
+  { timestamps: true },
+);
 
-module.exports = mongoose.model('User', UserSchema);
+export default mongoose.model("User", UserSchema);
