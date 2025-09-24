@@ -9,7 +9,6 @@ import cookieSession from "cookie-session";
 import cookieParser from "cookie-parser";
 import helmet from "helmet";
 import csurf from "csurf";
-
 import passport from "./config/passport.js";
 
 import userRoutes from "./routes/userRoutes.js";
@@ -24,15 +23,92 @@ const app = express();
 const port = process.env.PORT || 3000;
 const isProd = process.env.NODE_ENV === "production";
 
+// Security headers
+// app.use(helmet());
+
+// Block access to hidden/sensitive files, prevent path traversal, and ensure nosniff header -- sachintha
+app.use((req, res, next) => {
+  // Normalize path
+  let p = "";
+  try {
+    p = decodeURIComponent(req.path || "").replace(/\\/g, "/");
+  } catch (e) {
+    return res.status(400).end();
+  }
+
+  // Disallow path traversal attempts
+  if (p.includes("..")) {
+    return res.status(400).end();
+  }
+
+  // Deny any segment that starts with a dot or common sensitive names
+  const segments = p.split("/").filter(Boolean);
+  if (
+    segments.some((s) => s.startsWith(".")) ||
+    /(^|\/)(\.env|\.git|\.vercel)(\/|$)/i.test(p)
+  ) {
+    return res.status(404).end();
+  }
+
+  // Ensure X-Content-Type-Options header is present
+  //   res.setHeader("X-Content-Type-Options", "nosniff");
+
+  next();
+});
+
+// CORS whitelist and safe dynamic origin handling
+const CORS_WHITELIST = [
+  "http://localhost:5173",
+  "https://dormlk-frontend-1anh.vercel.app",
+  "https://dorm.lk",
+];
+
+// Ensure caches/proxies vary responses by origin
+app.use((req, res, next) => {
+  res.setHeader("Vary", "Origin");
+  next();
+});
+
+// Dynamic, restrictive CORS
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      // allow requests without an Origin header (curl, mobile apps, same-origin)
+      if (!origin) return callback(null, true);
+      if (CORS_WHITELIST.includes(origin)) return callback(null, true);
+      return callback(new Error("CORS policy: origin not allowed"), false);
+    },
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allowedHeaders: [
+      "Content-Type",
+      "Authorization",
+      "X-Requested-With",
+      "Accept",
+    ],
+    credentials: true,
+    optionsSuccessStatus: 204,
+  })
+);
+
+// Middlewares
+app.use(
+  cors({
+    origin: ["https://dormlk-frontend-1anh.vercel.app", "https://dorm.lk"],
+    methods: ["POST", "GET", "PUT", "DELETE", "PATCH", "OPTIONS"],
+    credentials: true,
+  })
+);
+// --- Core middleware ---
 // --- Security headers ---
 app.use(
   helmet({
     crossOriginResourcePolicy: { policy: "cross-origin" }, // tweak if you serve images/files
-  }),
+  })
 );
 
 // Core middleware
 app.set("trust proxy", 1);
+
 app.use(express.json());
 app.use(cookieParser());
 
@@ -50,7 +126,7 @@ app.use(
     },
     credentials: true,
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-  }),
+  })
 );
 
 // Minimal cookie session ONLY for OAuth "state"
@@ -61,7 +137,7 @@ app.use(
     maxAge: 30 * 60 * 1000,
     sameSite: isProd ? "none" : "lax",
     secure: isProd,
-  }),
+  })
 );
 
 // Passport (no persistent sessions)
@@ -85,6 +161,29 @@ app.use((req, res, next) => {
   // csurf attaches req.csrfToken() only AFTER its own middleware runs,
   // so we set this cookie in a tiny per-request hook we'll place AFTER csurf (see below).
   next();
+});
+// app.use(
+//   cookieSession({
+//     name: "session",
+//     keys: [process.env.SESSION_SECRET || "dev-secret"],
+//     maxAge: 24 * 60 * 60 * 1000,
+//   })
+// );
+// const isProd = process.env.NODE_ENV === "production";
+app.use(
+  cookieSession({
+    name: "session",
+    keys: [process.env.SESSION_SECRET || "dev-secret"],
+    maxAge: 24 * 60 * 60 * 1000,
+    httpOnly: true,
+    secure: isProd, // require HTTPS in production
+    sameSite: "none", // required for cross-site requests with credentials
+  })
+);
+
+// Test route
+app.get("/", (req, res) => {
+  res.send("Hello, World!");
 });
 
 // --- Health check (public, no CSRF needed) ---
