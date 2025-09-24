@@ -18,7 +18,7 @@ import DefaulltHeader from './PageComponents/DefaulltHeader.tsx'
 import MyPage from './pages/MyPage.tsx'
 import AdminDashboard from './Admin/AdminDashboard.tsx'
 import ViewAdminPostData from './Admin/pages/ViewAdminPostData.tsx'
-import GoogleAd from './components/GoogleAd.tsx'
+
 
 
 
@@ -31,12 +31,6 @@ function App() {
     <>
     {/* <Header/> */}
     <DefaulltHeader/>
-
-    {/* Ad placement at the top of content */}
-      <GoogleAd 
-        slot="your-header-ad-slot" // Replace with your actual ad slot
-        style={{ width: '100%', maxWidth: '1200px', margin: '10px auto', textAlign: 'center' }}
-      />
 
       <Routes>
         <Route path='/' element={<Home/>}/>
@@ -53,13 +47,6 @@ function App() {
       {/* <Link to={''}>
         <a>Go to About Page</a>
       </Link> */}
-
-      {/* Ad placement at the bottom of content */}
-      <GoogleAd 
-        slot="your-footer-ad-slot" // Replace with your actual ad slot
-        style={{ width: '100%', maxWidth: '1200px', margin: '20px auto', textAlign: 'center' }}
-      />
-
     
     </>
   )
